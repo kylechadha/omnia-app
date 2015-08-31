@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/codegangsta/negroni"
 	"github.com/kylechadha/omnia-app/app"
 	"github.com/kylechadha/omnia-app/routes"
+
+	"github.com/codegangsta/negroni"
 )
 
 func main() {
