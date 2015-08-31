@@ -17,7 +17,7 @@ func NewRouter(ioc *app.Ioc) *mux.Router {
 	// Widget routes.
 	u := ioc.UserController
 	users := router.PathPrefix("/users").Subrouter()
-	users.Handle("/", utils.AppHandler(u.UserCreate))
+	users.Handle("/", utils.AppHandler(u.UsersCreate))
 
 	// Catch all route.
 	router.NotFoundHandler = utils.AppHandler(func(w http.ResponseWriter, r *http.Request) (error, int) {

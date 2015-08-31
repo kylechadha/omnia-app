@@ -3,14 +3,14 @@ package app
 import "net/http"
 
 type Ioc struct {
-	UserController IUserController
-	PostController IPostController
+	UsersController IUsersController
+	PostsController IPostsController
 }
 
-type IUserController interface {
+type IUsersController interface {
 	UserCreate(w http.ResponseWriter, r *http.Request) (error, int)
 }
 
-type IPostController interface {
+type IPostsController interface {
 	PostCreate(w http.ResponseWriter, r *http.Request) (error, int)
 }
