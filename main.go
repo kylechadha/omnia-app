@@ -8,7 +8,6 @@ import (
 
 	"github.com/kylechadha/omnia-app/app"
 	"github.com/kylechadha/omnia-app/routes"
-	"gopkg.in/mgo.v2"
 
 	"github.com/codegangsta/negroni"
 )
@@ -27,7 +26,7 @@ func main() {
 	// Read the config data.
 	rawConfig, err := ioutil.ReadFile("app/config.json")
 	if err != nil {
-		fmt.Println("Unable to read 'app/config.json'. Are you sure it exists?")
+		fmt.Println("Unable to read 'app/config.json'. Is the filepath correct?")
 		os.Exit(1)
 	}
 
@@ -35,20 +34,24 @@ func main() {
 	var config map[string]string
 	err = json.Unmarshal(rawConfig, &config)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		os.Exit(1)
 	}
 
 	// Database
 	// ----------------------------
-	mongoUrl, mongoUrlOk := config["mongourl"]
+	// mongoUrl, mongoUrlOk := config["mongourl"]
 
-	if mongoUrlOk {
-		_, err := mgo.Dial(mongoUrl)
-		if err != nil {
-			panic(err)
-		}
-
-	}
+	// if mongoUrlOk {
+	// 	sessions, err := mgo.Dial(mongoUrl)
+	// 	if err != nil {
+	// 		fmt.Println("Unable to connect to the Mongo DB.")
+	// 		os.Exit(1)
+	// 	}
+	// } else {
+	// 	fmt.Println("Config file does not include a 'mongourl'.")
+	// 	os.Exit(1)
+	// }
 
 	// Object Graph
 	// ----------------------------
