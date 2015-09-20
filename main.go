@@ -23,6 +23,7 @@ func main() {
 		port = "3000"
 	}
 
+	// ? Should this be a config service ? ... probably...
 	// Read the config data.
 	rawConfig, err := ioutil.ReadFile("app/config.json")
 	if err != nil {
@@ -38,6 +39,7 @@ func main() {
 		os.Exit(1)
 	}
 
+	// ? Should this be a database service? Yes, move out soon
 	// Database
 	// ----------------------------
 	// mongoUrl, mongoUrlOk := config["mongourl"]
