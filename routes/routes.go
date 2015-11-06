@@ -10,15 +10,14 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func NewRouter(ioc *app.Ioc) *mux.Router {
+func NewRouter(app *app.Ioc) *mux.Router {
 
 	router := mux.NewRouter().StrictSlash(true)
 
-	// everything here will have to be prefixed with /api/* etc. to distinguish from frontend routes
-	// User routes.
-	// u := ioc.UsersController
-	// users := router.PathPrefix("/users").Subrouter()
-	// users.Handle("/", utils.AppHandler(u.UserCreate))
+	// Days routes.
+	d := app.DaysController
+	days := router.PathPrefix("/api/days").Subrouter()
+	days.Handle("/", utils.AppHandler(d.DayCreate))
 
 	// Static files.
 	router.PathPrefix("/libs").Handler(utils.RestrictDir(http.FileServer(http.Dir("./public/"))))

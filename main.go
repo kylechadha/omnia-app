@@ -1,13 +1,12 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/kylechadha/omnia-app/app"
+	"github.com/kylechadha/omnia-app/controllers"
 	"github.com/kylechadha/omnia-app/routes"
+	"github.com/kylechadha/omnia-app/services"
 
 	"github.com/codegangsta/negroni"
 )
@@ -21,22 +20,6 @@ func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "3000"
-	}
-
-	// ? Should this be a config service ? ... probably...
-	// Read the config data.
-	rawConfig, err := ioutil.ReadFile("app/config.json")
-	if err != nil {
-		fmt.Println("Unable to read 'app/config.json'. Is the filepath correct?")
-		os.Exit(1)
-	}
-
-	// Unmarshal the data into a JSON wrapper.
-	var config map[string]string
-	err = json.Unmarshal(rawConfig, &config)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
 	}
 
 	// ? Should this be a database service? Yes, move out soon
@@ -57,11 +40,15 @@ func main() {
 
 	// Object Graph
 	// ----------------------------
-	ioc := app.Ioc{}
+	app := app.Ioc{}
+	app.ConfigService = services.NewConfigService()
+	app.DaysController = controllers.NewDaysController(&app)
 
 	// Router
 	// ----------------------------
-	router := routes.NewRouter(&ioc)
+	router := routes.NewRouter(&app)
+
+	// Do we want to use negroni again? Meh ... what about another way to do recovery
 	n := negroni.New(
 		negroni.NewRecovery(),
 		negroni.NewLogger(),
