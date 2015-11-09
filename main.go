@@ -22,26 +22,11 @@ func main() {
 		port = "3000"
 	}
 
-	// ? Should this be a database service? Yes, move out soon
-	// Database
-	// ----------------------------
-	// mongoUrl, mongoUrlOk := config["mongourl"]
-
-	// if mongoUrlOk {
-	// 	sessions, err := mgo.Dial(mongoUrl)
-	// 	if err != nil {
-	// 		fmt.Println("Unable to connect to the Mongo DB.")
-	// 		os.Exit(1)
-	// 	}
-	// } else {
-	// 	fmt.Println("Config file does not include a 'mongourl'.")
-	// 	os.Exit(1)
-	// }
-
 	// Object Graph
 	// ----------------------------
 	app := app.Ioc{}
 	app.ConfigService = services.NewConfigService()
+	app.DatabaseService = services.NewDatabaseService(&app)
 	app.DaysController = controllers.NewDaysController(&app)
 
 	// Router

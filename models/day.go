@@ -1,13 +1,15 @@
 package models
 
+import "gopkg.in/mgo.v2/bson"
+
 type Day struct {
-	DayId            int    `json:"DayId"`
-	DayOfTheWeek     string `json:"DayOfTheWeek"`
-	DayOfTheWeekType string `json:"DayOfTheWeekType"`
-	SuccessfulWakeUp bool   `json:"SuccessfulWakeUp"`
-	MorningWork      bool   `json:"MorningWork"`
-	MorningWorkType  string `json:"MorningWorkType"`
-	WorkedOut        bool   `json:"WorkedOut"`
-	WorkedOutType    string `json:"WorkedOutType"`
-	PlannedNextDay   bool   `json:"PlannedNextDay"`
+	Id               bson.ObjectId `json:"id" bson:"_id"`
+	DayOfTheWeek     string        `json:"dayOfTheWeek" bson:"dayOfTheWeek"`
+	DayOfTheWeekType string        `json:"dayOfTheWeekType" bson:"dayOfTheWeekType"`
+	SuccessfulWakeUp bool          `json:"successfulWakeUp" bson:"successfulWakeUp"`
+	MorningWork      bool          `json:"morningWork" bson:"morningWork"`
+	MorningWorkType  string        `json:"morningWorkType" bson:"morningWorkType"`
+	WorkedOut        bool          `json:"workedOut" bson:"workedOut"`
+	WorkedOutType    string        `json:"workedOutType" bson:"workedOutType"`
+	PlannedNextDay   bool          `json:"plannedNextDay" bson:"plannedNextDay"`
 }

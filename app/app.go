@@ -3,12 +3,17 @@ package app
 import "net/http"
 
 type Ioc struct {
-	ConfigService  IConfigService
-	DaysController IDaysController
+	ConfigService   IConfigService
+	DatabaseService IDatabaseService
+	DaysController  IDaysController
 }
 
 type IConfigService interface {
 	GetConfig(key string) (string, error)
+}
+
+type IDatabaseService interface {
+	Create(collection string, data interface{}) error
 }
 
 type IDaysController interface {
