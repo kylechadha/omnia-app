@@ -5,6 +5,7 @@ import (
 
 	"github.com/kylechadha/omnia-app/app"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 // Database Service type.
@@ -31,11 +32,21 @@ func NewDatabaseService(app *app.Ioc) *databaseService {
 
 func (d *databaseService) Create(collection string, data interface{}) error {
 
-	// Write the user to mongo.
-	err := d.session.DB("omnia_app").C(collection).Insert(data)
+	// Write the user to the database.
+	err := d.session.DB("omnia").C(collection).Insert(data)
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (d *databaseService) Find(collection string, oId bson.ObjectId, document interface{}) (interface{}, error) {
+
+	err := d.session.DB("omnia").C(collection).FindId(oId).One(&document)
+	if err != nil {
+		return nil, err
+	}
+
+	return document, nil
 }

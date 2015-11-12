@@ -16,8 +16,9 @@ func NewRouter(app *app.Ioc) *mux.Router {
 
 	// Days routes.
 	d := app.DaysController
-	days := router.PathPrefix("/api/days").Subrouter()
-	days.Handle("/", utils.AppHandler(d.DayCreate))
+	days := router.PathPrefix("/api").Subrouter()
+	days.Handle("/day", utils.AppHandler(d.DayCreate))     // need to set this as a post only
+	days.Handle("/day/{id}/", utils.AppHandler(d.DayFind)) // need to set this as a get only
 
 	// Static files.
 	router.PathPrefix("/libs").Handler(utils.RestrictDir(http.FileServer(http.Dir("./public/"))))
