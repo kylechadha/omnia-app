@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/kylechadha/omnia-app/app"
@@ -14,11 +13,12 @@ func NewRouter(app *app.Ioc) *mux.Router {
 
 	router := mux.NewRouter().StrictSlash(true)
 
-	// Days routes.
+	// API routes.
 	d := app.DaysController
 	days := router.PathPrefix("/api").Subrouter()
-	days.Handle("/day", utils.AppHandler(d.DayCreate))     // need to set this as a post only
-	days.Handle("/day/{id}/", utils.AppHandler(d.DayFind)) // need to set this as a get only
+	days.Handle("/day", utils.AppHandler(d.DaysCreate))
+	days.Handle("/day/{id}/", utils.AppHandler(d.DaysFind))
+	days.Handle("/days/", utils.AppHandler(d.DaysFindAll))
 
 	// Static files.
 	router.PathPrefix("/libs").Handler(utils.RestrictDir(http.FileServer(http.Dir("./public/"))))
@@ -26,11 +26,7 @@ func NewRouter(app *app.Ioc) *mux.Router {
 	router.PathPrefix("/styles").Handler(utils.RestrictDir(http.FileServer(http.Dir("./public/"))))
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./public/views")))
 
-	// Catch all route.
-	// Actually we'll need a catch all route to send everything to the angular frontend to handle routing...
-	router.NotFoundHandler = utils.AppHandler(func(w http.ResponseWriter, r *http.Request) (error, int) {
-		return errors.New("Whoops, that's a 404."), http.StatusNotFound
-	})
+	// Angular routes...
 
 	return router
 }

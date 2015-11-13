@@ -30,10 +30,10 @@ func NewDatabaseService(app *app.Ioc) *databaseService {
 	return &databaseService{session}
 }
 
-func (d *databaseService) Create(collection string, data interface{}) error {
+func (d *databaseService) Create(collection string, document interface{}) error {
 
-	// Write the user to the database.
-	err := d.session.DB("omnia").C(collection).Insert(data)
+	// Write the document to the database.
+	err := d.session.DB("omnia").C(collection).Insert(document)
 	if err != nil {
 		return err
 	}
@@ -43,10 +43,23 @@ func (d *databaseService) Create(collection string, data interface{}) error {
 
 func (d *databaseService) Find(collection string, oId bson.ObjectId, document interface{}) (interface{}, error) {
 
+	// Find the document by ID.
 	err := d.session.DB("omnia").C(collection).FindId(oId).One(&document)
 	if err != nil {
 		return nil, err
 	}
 
 	return document, nil
+}
+
+func (d *databaseService) FindAll(collection string) ([]interface{}, error) {
+
+	// Find all documents in the collection.
+	var documents []interface{}
+	err := d.session.DB("omnia").C(collection).Find(bson.M{}).All(&documents)
+	if err != nil {
+		return nil, err
+	}
+
+	return documents, nil
 }

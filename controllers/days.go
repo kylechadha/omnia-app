@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -22,9 +21,9 @@ func NewDaysController(app *app.Ioc) *daysController {
 	return &daysController{app.DatabaseService}
 }
 
-// curl -XPOST -H 'Content-Type: application/json' -d '{"dayOfTheWeek": "Monday", "dayOfTheWeekType": "Weekday", "successfulWakeUp": true, "morningWork": true, "morningWorkType": "omnia app", "workedOut": true, "workedOutType": "swam", "plannedNextDay": true}' http://localhost:3000/api/day
+// curl -XPOST -H 'Content-Type: application/json' -d '{"dayOfTheWeek": "Saturday", "dayOfTheWeekType": "Weekend", "successfulWakeUp": true, "morningWork": true, "morningWorkType": "omnia app", "workedOut": true, "workedOutType": "swam", "plannedNextDay": true}' http://localhost:3000/api/day
 // DayCreate handler.
-func (c *daysController) DayCreate(w http.ResponseWriter, r *http.Request) (error, int) {
+func (c *daysController) DaysCreate(w http.ResponseWriter, r *http.Request) (error, int) {
 
 	// Create a new Day struct and set the ObjectId.
 	day := models.Day{}
@@ -42,9 +41,7 @@ func (c *daysController) DayCreate(w http.ResponseWriter, r *http.Request) (erro
 	return nil, http.StatusCreated
 }
 
-func (c *daysController) DayFind(w http.ResponseWriter, r *http.Request) (error, int) {
-
-	log.Println("In day find")
+func (c *daysController) DaysFind(w http.ResponseWriter, r *http.Request) (error, int) {
 
 	// Get the day ID from the params.
 	vars := mux.Vars(r)
@@ -55,16 +52,36 @@ func (c *daysController) DayFind(w http.ResponseWriter, r *http.Request) (error,
 		return errors.New("Invalid ID format."), http.StatusInternalServerError
 	}
 
-	// Get the Day via the Database Service.
+	// Retrieve the document.
 	dayOId := bson.ObjectIdHex(dayId)
-	log.Println(dayOId)
 	day, err := c.databaseService.Find("days", dayOId, models.Day{})
 	if err != nil {
 		return err, http.StatusNotFound
 	}
 
-	// Encode the Account struct as JSON.
+	// Marshal the document as JSON.
 	json, err := json.Marshal(day)
+	if err != nil {
+		return err, http.StatusInternalServerError
+	}
+
+	// Write the JSON to the response.
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(json)
+
+	return nil, http.StatusOK
+}
+
+func (c *daysController) DaysFindAll(w http.ResponseWriter, r *http.Request) (error, int) {
+
+	// Retrieve all documents in the days collection.
+	days, err := c.databaseService.FindAll("days")
+	if err != nil {
+		return err, http.StatusNotFound
+	}
+
+	// Marshal the documents as JSON.
+	json, err := json.Marshal(days)
 	if err != nil {
 		return err, http.StatusInternalServerError
 	}
